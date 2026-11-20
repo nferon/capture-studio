@@ -119,3 +119,34 @@ begin
   end;
   Result := True;
 end;
+
+function InitializeUninstall: Boolean;
+var
+  SessionId: LongWord;
+  Locator, Services, Processes: Variant;
+begin
+  Result := False;
+  try
+    if not ProcessIdToSessionId(GetCurrentProcessId, SessionId) then Exit;
+    Locator := CreateOleObject('WbemScripting.SWbemLocator');
+    Services := Locator.ConnectServer('.', 'root\CIMV2');
+    Processes := Services.ExecQuery('SELECT ProcessId FROM Win32_Process WHERE Name = ''CaptureStudio.exe'' AND SessionId = ' + IntToStr(SessionId));
+    if Processes.Count > 0 then begin
+      MsgBox('Enregistrez vos projets puis quittez Capture Studio depuis son icône près de l''horloge avant de désinstaller.', mbInformation, MB_OK);
+      Exit;
+    end;
+    Result := True;
+  except
+    MsgBox('Impossible de vérifier si Capture Studio est fermé. Réessayez après avoir quitté l''application.', mbError, MB_OK);
+  end;
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var Value: String;
+begin
+  if CurUninstallStep = usUninstall then begin
+    if RegQueryStringValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', 'CaptureStudio', Value) then
+      if CompareText(Value, ExpandConstant('"{app}\CaptureStudio.exe" --background')) = 0 then
+        RegDeleteValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', 'CaptureStudio');
+  end;
+end;

@@ -57,3 +57,5 @@ Le workflow manuel **Build and release** compile, teste, construit et vérifie l
 Les logos Discord et WhatsApp proviennent de [Simple Icons](https://github.com/simple-icons/simple-icons). Leurs sources et la licence associée sont conservées dans `assets/`. Ils identifient les applications de destination ; Capture Studio n'est pas affilié à ces services.
 
 La licence des sources de Capture Studio reste à définir par l'auteur. Leur publication ne constitue pas, à elle seule, l'octroi d'une licence de réutilisation.
+
+Les projets enregistrés lors d'une mise à jour sont rouverts après le redémarrage automatique. Les tests couvrent cette reprise ainsi que l'installation, la réinstallation et la désinstallation en préservant les données utilisateur.

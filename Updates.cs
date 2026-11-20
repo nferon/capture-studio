@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Web.Script.Serialization;
@@ -29,13 +30,13 @@ public static class StudioUpdate {
  public static bool MatchesHash(byte[] bytes,string digest){using(var hash=SHA256.Create()){string actual="sha256:"+BitConverter.ToString(hash.ComputeHash(bytes)).Replace("-","").ToLowerInvariant();return String.Equals(actual,digest,StringComparison.OrdinalIgnoreCase);}}
  public static async Task<byte[]> Download(string url,int limit){
   ServicePointManager.SecurityProtocol|=SecurityProtocolType.Tls12;
-  using(var client=new HttpClient()){client.Timeout=TimeSpan.FromSeconds(90);client.DefaultRequestHeaders.UserAgent.ParseAdd("CaptureStudio/"+Studio.ReleaseVersion);client.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
-   using(var response=await client.GetAsync(url,HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false)){
+  using(var timeout=new CancellationTokenSource(TimeSpan.FromSeconds(90)))using(var client=new HttpClient()){client.Timeout=TimeSpan.FromSeconds(90);client.DefaultRequestHeaders.UserAgent.ParseAdd("CaptureStudio/"+Studio.ReleaseVersion);client.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
+   using(var response=await client.GetAsync(url,HttpCompletionOption.ResponseHeadersRead,timeout.Token).ConfigureAwait(false)){
     response.EnsureSuccessStatusCode();var uri=response.RequestMessage.RequestUri;
     if(uri.Scheme!="https"||!(new[]{"api.github.com","github.com","release-assets.githubusercontent.com","objects.githubusercontent.com"}).Contains(uri.Host))throw new InvalidDataException("Adresse de téléchargement non autorisée.");
     if(response.Content.Headers.ContentLength>limit)throw new InvalidDataException("Téléchargement trop volumineux.");
     using(var stream=await response.Content.ReadAsStreamAsync().ConfigureAwait(false))using(var memory=new MemoryStream()){
-     byte[] buffer=new byte[65536];int read;while((read=await stream.ReadAsync(buffer,0,buffer.Length).ConfigureAwait(false))>0){if(memory.Length+read>limit)throw new InvalidDataException("Téléchargement trop volumineux.");memory.Write(buffer,0,read);}return memory.ToArray();
+     byte[] buffer=new byte[65536];int read;while((read=await stream.ReadAsync(buffer,0,buffer.Length,timeout.Token).ConfigureAwait(false))>0){if(memory.Length+read>limit)throw new InvalidDataException("Téléchargement trop volumineux.");memory.Write(buffer,0,read);}return memory.ToArray();
     }
    }
   }
