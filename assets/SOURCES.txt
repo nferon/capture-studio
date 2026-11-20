@@ -1,0 +1,5 @@
+Logos issus de Simple Icons, récupérés le 20 novembre 2026 :
+https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/discord.svg
+https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/whatsapp.svg
+Les fichiers SVG et la licence du dépôt sont conservés dans ce dossier.
+Les PNG transparents 64x64 ont été générés par render-logos.ps1 pour le rendu WinForms.

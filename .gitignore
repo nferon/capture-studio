@@ -1,0 +1,10 @@
+/dist/
+/artifacts/
+*.exe
+*.pdb
+*.tmp
+*.bak
+*.capture
+preferences.json
+test-*/
+verification-*.png
