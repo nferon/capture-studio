@@ -71,6 +71,7 @@ public partial class Studio {
   finally{checkingUpdates=false;}
  }
  protected virtual bool PrepareUpdateRestart(){
+  if(CaptureWindows().Any(w=>w.adjustmentsOpen)){MessageBox.Show(this,"Appliquez ou annulez le redressement en cours avant la mise à jour.","Mises à jour");return false;}
   if(CaptureHost.capturing||CaptureHost.ocrBusy){MessageBox.Show(this,"Attendez la fin de la capture ou de l’OCR avant d’installer la mise à jour.","Mises à jour");return false;}
   foreach(var window in CaptureWindows()){
    if(window.IsDisposed)continue;window.FinishInlineText(true);
@@ -96,3 +97,4 @@ public partial class Studio {
   preferences.LastUpdateCheckUtc=DateTime.UtcNow.ToString("o",CultureInfo.InvariantCulture);SavePreferences();await CheckUpdates(false);
  }
 }
+

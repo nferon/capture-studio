@@ -4,8 +4,8 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 
 public partial class Studio {
- Button clearCaptureAction;StudioButton captureAction,copyAction,exportAction;Button paletteReference;bool paletteExpanded;
- void RefreshEditorActions(){if(captureAction==null)return;bool ready=photo!=null;captureAction.Primary=!ready;copyAction.Primary=ready;exportAction.Primary=false;copyAction.Enabled=exportAction.Enabled=ready;if(shareAction!=null)shareAction.Enabled=ready;if(clearCaptureAction!=null)clearCaptureAction.Enabled=ready;captureAction.Invalidate();copyAction.Invalidate();exportAction.Invalidate();}
+ Button adjustImageAction;Button clearCaptureAction;StudioButton captureAction,copyAction,exportAction;Button paletteReference;bool paletteExpanded;
+ void RefreshEditorActions(){if(captureAction==null)return;bool ready=photo!=null;captureAction.Primary=!ready;copyAction.Primary=ready;exportAction.Primary=false;copyAction.Enabled=exportAction.Enabled=ready;if(shareAction!=null)shareAction.Enabled=ready;if(clearCaptureAction!=null)clearCaptureAction.Enabled=ready;if(adjustImageAction!=null)adjustImageAction.Enabled=ready;captureAction.Invalidate();copyAction.Invalidate();exportAction.Invalidate();}
  void RefreshPaletteControls(){if(paletteReference!=null)paletteReference.Visible=paletteExpanded&&paletteSource.SelectedIndex==2;}
  void FitSettingsContent(FlowLayoutPanel panel,FlowLayoutPanel footer){
   bool fitting=false;

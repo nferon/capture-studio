@@ -3,7 +3,7 @@ $ErrorActionPreference='Stop'
 $repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $bin=[IO.Path]::GetFullPath($BinaryDirectory)
 $compiler=Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
-$tests=@('VerifyInstallerShutdown','VerifyUpdates','VerifyCaptureDelay','VerifyClearCapture','VerifyExportShortcuts')
+$tests=@('VerifyImageAdjustments','VerifyInstallerShutdown','VerifyUpdates','VerifyCaptureDelay','VerifyClearCapture','VerifyExportShortcuts')
 if($IncludeOcr){$tests+='VerifyOcrSelection'}
 if($IncludeNetwork){$tests+='VerifyLiveUpdates'}
 foreach($test in $tests){

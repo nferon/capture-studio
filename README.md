@@ -4,7 +4,7 @@ Outil Windows de capture et d'annotation pour préparer des tutoriels : capture 
 
 ## Installer
 
-Télécharger **CaptureStudio-Setup-0.15.1.exe** depuis [la dernière version](https://github.com/nferon/capture-studio/releases/latest). L’installateur demande à l’application de sauvegarder ses projets puis de quitter proprement. Annuler une sauvegarde annule l’installation. Les versions antérieures à 0.15.1 doivent être quittées manuellement via l’icône près de l’horloge une dernière fois.
+Télécharger **CaptureStudio-Setup-0.16.0.exe** depuis [la dernière version](https://github.com/nferon/capture-studio/releases/latest). L’installateur demande à l’application de sauvegarder ses projets puis de quitter proprement. Annuler une sauvegarde annule l’installation. Les versions antérieures à 0.15.1 doivent être quittées manuellement via l’icône près de l’horloge une dernière fois.
 
 L'installation se fait pour l'utilisateur courant dans `%LOCALAPPDATA%\Programs\CaptureStudio`, sans droits administrateur. Un raccourci est créé dans le menu Démarrer. Les réglages et brouillons sont conservés séparément dans `%LOCALAPPDATA%\CaptureStudio`. Les fichiers `.capture` enregistrés par l'utilisateur ne sont pas déplacés.
 
@@ -63,3 +63,13 @@ Les projets enregistrés lors d'une mise à jour sont rouverts après le redéma
 Le test facultatif -IncludeNetwork télécharge l'installateur de la dernière version publique et vérifie son SHA-256 sans l'exécuter. Il nécessite un accès réseau et une version déjà publiée.
 
 À partir de la version 0.15.1, l’installateur inclut un processus de demande de fermeture. Il ne termine jamais une application de force, respecte l’annulation, attend la fin réelle du processus et vérifie à nouveau qu’aucune instance ne reste active avant de modifier les fichiers. Les échanges temporaires ne contiennent qu’un identifiant aléatoire et un statut de fermeture, jamais une image ou du texte OCR.
+
+## Redresser et améliorer une photo
+
+Le bouton **Redresser** dans la barre latérale (également dans Fichier) ouvre un aperçu avant/après. La détection locale propose un contour rectangulaire : ajuster ses quatre coins autour du téléphone, d’un écran ou d’un document. La correction de perspective remet ce contour de face. Les proportions sont estimées par défaut ; des formats portrait et paysage peuvent être choisis. Cette première détection analyse des bords, pas l’identité sémantique d’un objet : un fond chargé ou un contour peu contrasté peut nécessiter une sélection manuelle.
+
+Luminosité, contraste et saturation sont réglables. Le bouton d’amélioration automatique propose des réglages de lumière. Rotation fine et quarts de tour sont disponibles. Un fond de couleur automatique ou personnalisée, une marge et une ombre légère peuvent être ajoutés ; aucun fond peut aussi être choisi.
+
+La validation crée une **nouvelle image dans une autre fenêtre**, en conservant l’original et son projet. Les annotations déjà présentes font partie du rendu de la copie corrigée et y sont donc intégrées aux pixels ; elles restent modifiables dans la fenêtre d’origine. Annuler ne remplace pas l’image.
+
+Après un recadrage, une proposition peut s’ouvrir lorsqu’un contour incliné est détecté avec une qualité suffisante. Cette proposition est désactivable dans Paramètres. Les images et aperçus restent en mémoire pendant ces traitements locaux ; ils ne sont envoyés à aucun service d’analyse. Les tests publics utilisent uniquement des images synthétiques.

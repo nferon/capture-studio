@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-public class StudioPreferences {public uint HotkeyKey=0x2c,HotkeyModifiers;public bool MultipleWindows=true;public bool CloseToTray,RememberWindow=true,Maximized;public int WindowX,WindowY,WindowW,WindowH;public string[] ShareFavorites=new string[]{"Discord","WhatsApp"};public bool CheckUpdates=true;public string LastUpdateCheckUtc;public string CaptureDirectory;public string Theme="Système";public bool Hotkey;public string[] Recent=new string[0];public int Ink=unchecked((int)0xff7357ff),Mode,Delay=3;public decimal Size=180,Zoom=3,Thickness=4;public string Palette="Classique";public int[] ReferenceColors;}
+public class StudioPreferences {public uint HotkeyKey=0x2c,HotkeyModifiers;public bool SuggestStraightening=true;public bool MultipleWindows=true;public bool CloseToTray,RememberWindow=true,Maximized;public int WindowX,WindowY,WindowW,WindowH;public string[] ShareFavorites=new string[]{"Discord","WhatsApp"};public bool CheckUpdates=true;public string LastUpdateCheckUtc;public string CaptureDirectory;public string Theme="Système";public bool Hotkey;public string[] Recent=new string[0];public int Ink=unchecked((int)0xff7357ff),Mode,Delay=3;public decimal Size=180,Zoom=3,Thickness=4;public string Palette="Classique";public int[] ReferenceColors;}
 public partial class Studio {
  string dataDirectory,cachedSource;bool persistenceEnabled,loadingPreferences;Timer draftTimer;StudioPreferences preferences=new StudioPreferences();
  ComboBox paletteSource;Label paletteInfo;TextBox inlineText;Mark textTarget;bool newText,finishingText;string originalText;
