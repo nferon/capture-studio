@@ -59,3 +59,5 @@ Les logos Discord et WhatsApp proviennent de [Simple Icons](https://github.com/s
 La licence des sources de Capture Studio reste à définir par l'auteur. Leur publication ne constitue pas, à elle seule, l'octroi d'une licence de réutilisation.
 
 Les projets enregistrés lors d'une mise à jour sont rouverts après le redémarrage automatique. Les tests couvrent cette reprise ainsi que l'installation, la réinstallation et la désinstallation en préservant les données utilisateur.
+
+Le test facultatif -IncludeNetwork télécharge l'installateur de la dernière version publique et vérifie son SHA-256 sans l'exécuter. Il nécessite un accès réseau et une version déjà publiée.
