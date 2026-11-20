@@ -4,7 +4,7 @@ Outil Windows de capture et d'annotation pour préparer des tutoriels : capture 
 
 ## Installer
 
-Télécharger **CaptureStudio-Setup-0.15.0.exe** depuis [la dernière version](https://github.com/nferon/capture-studio/releases/latest). Enregistrer les projets puis quitter toutes les fenêtres via l'icône près de l'horloge avant une première installation.
+Télécharger **CaptureStudio-Setup-0.15.1.exe** depuis [la dernière version](https://github.com/nferon/capture-studio/releases/latest). L’installateur demande à l’application de sauvegarder ses projets puis de quitter proprement. Annuler une sauvegarde annule l’installation. Les versions antérieures à 0.15.1 doivent être quittées manuellement via l’icône près de l’horloge une dernière fois.
 
 L'installation se fait pour l'utilisateur courant dans `%LOCALAPPDATA%\Programs\CaptureStudio`, sans droits administrateur. Un raccourci est créé dans le menu Démarrer. Les réglages et brouillons sont conservés séparément dans `%LOCALAPPDATA%\CaptureStudio`. Les fichiers `.capture` enregistrés par l'utilisateur ne sont pas déplacés.
 
@@ -61,3 +61,5 @@ La licence des sources de Capture Studio reste à définir par l'auteur. Leur pu
 Les projets enregistrés lors d'une mise à jour sont rouverts après le redémarrage automatique. Les tests couvrent cette reprise ainsi que l'installation, la réinstallation et la désinstallation en préservant les données utilisateur.
 
 Le test facultatif -IncludeNetwork télécharge l'installateur de la dernière version publique et vérifie son SHA-256 sans l'exécuter. Il nécessite un accès réseau et une version déjà publiée.
+
+À partir de la version 0.15.1, l’installateur inclut un processus de demande de fermeture. Il ne termine jamais une application de force, respecte l’annulation, attend la fin réelle du processus et vérifie à nouveau qu’aucune instance ne reste active avant de modifier les fichiers. Les échanges temporaires ne contiennent qu’un identifiant aléatoire et un statut de fermeture, jamais une image ou du texte OCR.

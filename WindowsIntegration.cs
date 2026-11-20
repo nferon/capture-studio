@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 
 public partial class Studio {
- static string InstanceName {get{return "CaptureStudio."+WindowsIdentity.GetCurrent().User.Value+"."+System.Diagnostics.Process.GetCurrentProcess().SessionId;}}
+ static string InstanceName {get{return SetupCloseProtocol.PipeName;}}
  NamedPipeServerStream instanceServer;bool instanceClosing,startInBackground;string[] startupArguments=new string[0];bool suppressRecovery;
  public static int RunWindowsApp(string[] args){
   bool first;using(var mutex=new Mutex(true,"Local\\"+InstanceName,out first)){
@@ -21,7 +21,7 @@ public partial class Studio {
  void StartInstanceServer(){
   var security=new PipeSecurity();security.SetAccessRuleProtection(true,false);security.AddAccessRule(new PipeAccessRule(WindowsIdentity.GetCurrent().User,PipeAccessRights.FullControl,AccessControlType.Allow));
   instanceServer=new NamedPipeServerStream(InstanceName,PipeDirection.In,1,PipeTransmissionMode.Byte,PipeOptions.None,4096,4096,security);
-  var thread=new Thread(delegate(){while(!instanceClosing){try{instanceServer.WaitForConnection();string message;using(var reader=new StreamReader(instanceServer,System.Text.Encoding.UTF8,false,4096,true)){char[] buffer=new char[32769];int count=0,c;while(count<buffer.Length&&(c=reader.Read())>=0&&c!='\n')buffer[count++]=(char)c;if(count>32768)throw new InvalidDataException("Requête trop longue.");message=new string(buffer,0,count);}instanceServer.Disconnect();var forwarded=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<string[]>(message);if(!instanceClosing&&IsHandleCreated)BeginInvoke(new Action(delegate{if(!Enabled||capturing){Show();Activate();return;}HandleLaunch(forwarded??new string[0],true);}));}catch{if(instanceClosing)return;try{if(instanceServer.IsConnected)instanceServer.Disconnect();}catch{}}}}){IsBackground=true,Name="CaptureStudio instance"};thread.Start();
+  var thread=new Thread(delegate(){while(!instanceClosing){try{instanceServer.WaitForConnection();string message;using(var reader=new StreamReader(instanceServer,System.Text.Encoding.UTF8,false,4096,true)){char[] buffer=new char[32769];int count=0,c;while(count<buffer.Length&&(c=reader.Read())>=0&&c!='\n')buffer[count++]=(char)c;if(count>32768)throw new InvalidDataException("Requête trop longue.");message=new string(buffer,0,count);}instanceServer.Disconnect();var forwarded=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<string[]>(message);if(!instanceClosing&&IsHandleCreated)BeginInvoke(new Action(delegate{string request=(forwarded??new string[0]).FirstOrDefault(a=>a!=null&&a.StartsWith(SetupCloseProtocol.Prefix,StringComparison.Ordinal));if(request!=null){HandleInstallerCloseRequest(request);return;}if(!Enabled||capturing){Show();Activate();return;}HandleLaunch(forwarded??new string[0],true);}));}catch{if(instanceClosing)return;try{if(instanceServer.IsConnected)instanceServer.Disconnect();}catch{}}}}){IsBackground=true,Name="CaptureStudio instance"};thread.Start();
   FormClosed+=delegate{instanceClosing=true;instanceServer.Dispose();};
  }
  void InitializeWindowsSession(){

@@ -1,5 +1,5 @@
 #ifndef AppVersion
-  #define AppVersion "0.15.0"
+  #define AppVersion "0.15.1"
 #endif
 #ifndef SourceDir
   #define SourceDir "..\dist"
@@ -35,6 +35,7 @@ SignedUninstaller=no
 Name: "french"; MessagesFile: "compiler:Languages\French.isl"
 
 [Files]
+Source: "{#SourceDir}\SetupBridge.exe"; Flags: dontcopy noencryption
 Source: "{#SourceDir}\CaptureStudio.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourceDir}\CaptureStudio.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourceDir}\CaptureStudio.ico"; DestDir: "{app}"; Flags: ignoreversion
@@ -55,10 +56,11 @@ Root: HKCU; Subkey: "Software\RegisteredApplications"; ValueType: string; ValueN
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "CaptureStudio"; ValueData: """{app}\CaptureStudio.exe"" --background"; Check: StartupAlreadyEnabled
 
 [Run]
-Filename: "{app}\CaptureStudio.exe"; Description: "Ouvrir Capture Studio"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\CaptureStudio.exe"; Parameters: "{code:LaunchArguments}"; Description: "Ouvrir Capture Studio"; Flags: nowait postinstall skipifsilent
 Filename: "{app}\CaptureStudio.exe"; Parameters: "--resume-update"; Flags: nowait; Check: RestartRequested
 
 [Code]
+var PreparedSession: Boolean;
 function OpenProcess(Access: LongWord; Inherit: Boolean; ProcessId: LongWord): THandle;
   external 'OpenProcess@kernel32.dll stdcall';
 function WaitForSingleObject(Handle: THandle; Milliseconds: LongWord): LongWord;
@@ -80,9 +82,14 @@ begin
   Result := ExpandConstant('{param:RESTARTAPP|0}') = '1';
 end;
 
+function LaunchArguments(Param: String): String;
+begin
+  if PreparedSession or RestartRequested then Result := '--resume-update' else Result := '';
+end;
+
 function InitializeSetup: Boolean;
 var
-  ProcessId: Integer;
+  ProcessId, CloseCode: Integer;
   Handle: THandle;
   SessionId: LongWord;
   Locator, Services, Processes: Variant;
@@ -110,8 +117,23 @@ begin
     Services := Locator.ConnectServer('.', 'root\CIMV2');
     Processes := Services.ExecQuery('SELECT ProcessId FROM Win32_Process WHERE Name = ''CaptureStudio.exe'' AND SessionId = ' + IntToStr(SessionId));
     if Processes.Count > 0 then begin
-      MsgBox('Capture Studio est encore actif. Enregistrez vos projets puis choisissez Quitter depuis son icône près de l''horloge, et relancez l''installation.', mbInformation, MB_OK);
-      Exit;
+      ExtractTemporaryFile('SetupBridge.exe');
+      if not Exec(ExpandConstant('{tmp}\SetupBridge.exe'), '', '', SW_HIDE, ewWaitUntilTerminated, CloseCode) then begin
+        MsgBox('Impossible de demander la fermeture de Capture Studio. Enregistrez vos projets puis quittez l''application depuis son icône près de l''horloge.', mbInformation, MB_OK);
+        Exit;
+      end;
+      if CloseCode <> 0 then begin
+        if CloseCode = 2 then MsgBox('L''installation a été annulée. Vos fenêtres Capture Studio restent ouvertes.', mbInformation, MB_OK)
+        else if CloseCode = 4 then MsgBox('Une opération est en cours dans Capture Studio. Terminez-la puis relancez l''installation.', mbInformation, MB_OK)
+        else MsgBox('Cette instance ne peut pas être fermée automatiquement. Enregistrez vos projets puis choisissez Quitter près de l''horloge et relancez l''installation. Les versions antérieures à 0.15.1 nécessitent cette fermeture manuelle.', mbInformation, MB_OK);
+        Exit;
+      end;
+      Processes := Services.ExecQuery('SELECT ProcessId FROM Win32_Process WHERE Name = ''CaptureStudio.exe'' AND SessionId = ' + IntToStr(SessionId));
+      if Processes.Count > 0 then begin
+        MsgBox('Capture Studio est encore actif. L''installation ne modifiera aucun fichier tant qu''il n''a pas quitté.', mbInformation, MB_OK);
+        Exit;
+      end;
+      PreparedSession := True;
     end;
   except
     MsgBox('Impossible de vérifier si Capture Studio est fermé. Réessayez après avoir quitté l''application.', mbError, MB_OK);

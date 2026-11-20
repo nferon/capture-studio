@@ -1,10 +1,10 @@
-Première publication publique de Capture Studio.
+Capture Studio 0.15.1 — fermeture propre avant installation.
 
-- Installateur Windows par utilisateur, raccourci dans le menu Démarrer et désinstallation.
-- Recherche des mises à jour depuis l'application et vérification quotidienne désactivable.
-- Téléchargement HTTPS et contrôle SHA-256 avant exécution de l'installateur.
-- Sauvegarde obligatoire des captures ouvertes avant le redémarrage de mise à jour.
-- Capture de zone, fenêtre et écran avec retardateur visible.
-- Plusieurs éditeurs, annotations déplaçables, loupes, flou local, OCR par sélection et partage avec grandes tuiles Discord/WhatsApp.
+- L'installateur demande à Capture Studio de sauvegarder les projets ouverts puis de quitter.
+- Annuler une sauvegarde annule l'installation et laisse les fenêtres ouvertes.
+- Le processus d'installation attend la fermeture réelle et vérifie de nouveau les instances actives.
+- Les captures et OCR en cours ne sont pas interrompus. Aucun processus n'est terminé de force.
+- Les projets sauvegardés sont rouverts au redémarrage après installation.
 
-L'installateur et l'exécutable ne sont pas encore signés Authenticode. Les contacts des messageries ne sont pas intégrés ; les favoris copient l'image puis ouvrent l'application.
+Les versions antérieures à 0.15.1 doivent encore être quittées manuellement une dernière fois, ou être mises à jour depuis leur propre menu de mises à jour.
+L'installateur et l'exécutable ne sont pas encore signés Authenticode.

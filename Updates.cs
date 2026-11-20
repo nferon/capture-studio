@@ -70,7 +70,7 @@ public partial class Studio {
   catch(Exception ex){if(interactive&&!IsDisposed)MessageBox.Show(this,ex.Message,"Mise à jour impossible");}
   finally{checkingUpdates=false;}
  }
- bool PrepareUpdateRestart(){
+ protected virtual bool PrepareUpdateRestart(){
   if(CaptureHost.capturing||CaptureHost.ocrBusy){MessageBox.Show(this,"Attendez la fin de la capture ou de l’OCR avant d’installer la mise à jour.","Mises à jour");return false;}
   foreach(var window in CaptureWindows()){
    if(window.IsDisposed)continue;window.FinishInlineText(true);
